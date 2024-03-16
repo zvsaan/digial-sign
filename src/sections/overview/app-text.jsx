@@ -1,40 +1,22 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
+import React from 'react';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 
-import { RouterLink } from 'src/routes/components';
-
-export default function TextView() {
-
+export default function AppText() {
   return (
-      <Container>
-        <Box
-          sx={{
-            py: 12,
-            maxWidth: 480,
-            mx: 'auto',
-            display: 'flex',
-            minHeight: '100vh',
-            textAlign: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
-            justifyContent: 'center',
-          }}
-        >
-          <Typography variant="h4" sx={{ mb: 3 }}>
-            Perbanyak Dokumen Anda!
-          </Typography>
-
-          <Typography sx={{ color: 'text.secondary' }}>
-            Ingin mendapatkan manfaat penuh dari layanan kami?
-            Tingkatkan ke paket premium sekarang dan nikmati fitur-fitur eksklusif yang tidak tersedia dalam paket.
-          </Typography>
-
-          <Button href="/" size="large" variant="contained" component={RouterLink} sx={{ marginTop: 3 }}>
-            Upgrade
-          </Button>
-        </Box>
-      </Container>
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 3 }}>
+      <Box sx={{ maxWidth: '480px', textAlign: 'center' }}>
+        <Typography variant="h4" sx={{ mb: 2 }}>
+          Perbanyak Dokumen Anda!
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          Ingin mendapatkan manfaat penuh dari layanan kami? Tingkatkan ke paket premium sekarang dan nikmati fitur-fitur eksklusif yang tidak tersedia dalam paket.
+        </Typography>
+        <Button variant="contained" color="primary">
+          Premium
+        </Button>
+      </Box>
+    </Box>
   );
 }
