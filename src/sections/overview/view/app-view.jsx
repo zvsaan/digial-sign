@@ -3,6 +3,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import AppWidgetSummary from '../app-widget-summary';
+import AppText from '../app-text';
 // import AppCurrentVisits from '../app-current-visits';
 
 export default function AppView() {
@@ -48,6 +49,8 @@ export default function AppView() {
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_ditandatangani.png" />}
           />
         </Grid>
+
+        <AppText/>
       </Grid>
     </Container>
   );  
