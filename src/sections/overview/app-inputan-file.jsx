@@ -12,8 +12,12 @@ export default function AppWidgetInputan({ onFileChange }) {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    setSelectedFile(file);
-    onFileChange(file);
+    if (file && file.type === 'application/pdf') {
+      setSelectedFile(file);
+      onFileChange(file);
+    } else {
+      alert('Hanya file PDF yang dapat diunggah!');
+    }
   };
 
   return (
@@ -55,7 +59,7 @@ export default function AppWidgetInputan({ onFileChange }) {
           <Typography variant="body2">or</Typography>
           <Button variant="contained" component="label" sx={{ mt: 1 }}>
             Choose File
-            <input type="file" hidden onChange={handleFileChange} accept=".csv, .xlsx" />
+            <input type="file" hidden onChange={handleFileChange} accept=".pdf" />
           </Button>
         </Box>
         {selectedFile && (

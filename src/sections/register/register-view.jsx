@@ -34,7 +34,7 @@ export default function RegisterView() {
   const handleClick = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/register', formData);
+      const response = await axios.post('http://127.0.0.1:8000/register', formData);
       console.log(response.data);
       router.push('/login');
     } catch (error) {
