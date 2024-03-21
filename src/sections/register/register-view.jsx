@@ -1,6 +1,5 @@
 import { useState } from 'react';
-
-import axios from 'axios';
+import { Link as RouterLink } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
@@ -13,8 +12,6 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { alpha, useTheme } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { useRouter } from 'src/routes/hooks';
-
 import { bgGradient } from 'src/theme/css';
 
 import Logo from 'src/components/logo';
@@ -22,78 +19,63 @@ import Iconify from 'src/components/iconify';
 
 export default function RegisterView() {
   const theme = useTheme();
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    password_confirmation: ''
   });
-  const [loading, setLoading] = useState(false);
+  const [errorState, setErrorState] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const handleClick = async () => {
-    setLoading(true);
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:8000/register', formData);
-      console.log(response.data);
-      router.push('/login');
-    } catch (error) {
-      console.error('Error registering:', error);
-    } finally {
-      setLoading(false);
+      if (!formData.name || !formData.email || !formData.password || !formData.password_confirmation) {
+        setErrorState('All fields are required');
+        return;
+      }
+      if (formData.password.length < 8) {
+        setErrorState('Password must be at least 8 characters long');
+        return;
+      }
+      if (formData.password !== formData.password_confirmation) {
+        setErrorState('Password and confirm password must match');
+        return;
+      }
+      const response = await fetch('http://127.0.0.1:8000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setSuccessMessage('Account successfully created. Please login.');
+        setFormData({
+          name: '',
+          email: '',
+          password: '',
+          password_confirmation: ''
+        });
+        setErrorState('');
+      } else {
+        setErrorState(data.error);
+      }
+    } catch (err) {
+      setErrorState('Error occurred. Please try again later.');
     }
   };
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const renderForm = (
-    <>
-      <Stack spacing={3}>
-        <TextField name="name" label="Nama" onChange={handleChange} />
-
-        <TextField name="email" label="Email address" onChange={handleChange} />
-
-        <TextField
-          name="password"
-          label="Password"
-          type={showPassword ? 'text' : 'password'}
-          onChange={handleChange}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Stack>
-
-      <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-        <Link variant="subtitle2" underline="hover">
-          Forget password?
-        </Link>
-      </Stack>
-
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
-        color="inherit"
-        onClick={handleClick}
-        loading={loading}
-      >
-        Register
-      </LoadingButton>
-    </>
-  );
 
   return (
     <Box
@@ -112,7 +94,6 @@ export default function RegisterView() {
           left: { xs: 16, md: 24 },
         }}
       />
-
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Card
           sx={{
@@ -121,15 +102,57 @@ export default function RegisterView() {
             maxWidth: 420,
           }}
         >
-          <Typography variant="h4">Sign up</Typography>
-
-          <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-            You have an account?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }}>
+          <Typography variant="h4" sx={{ mb: 3 }}>Sign up</Typography>
+          {errorState && (
+            <Typography variant="body2" color="error" sx={{ mt: 1, mb: 2 }}>
+              {errorState}
+            </Typography>
+          )}
+          {successMessage && (
+            <Typography variant="body2" color="success" sx={{ mt: 1, mb: 2 }}>
+              {successMessage}
+            </Typography>
+          )}
+          <form onSubmit={handleSubmit}>
+            <Stack spacing={3}>
+              <TextField name="name" label="Name" value={formData.name} onChange={handleChange} />
+              <TextField name="email" label="Email address" value={formData.email} onChange={handleChange} />
+              <TextField
+                name="password"
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
+                value={formData.password}
+                onChange={handleChange}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                        <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                name="password_confirmation"
+                label="Confirm Password"
+                type="password"
+                value={formData.password_confirmation}
+                onChange={handleChange}
+              />
+            </Stack>
+            <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
+              <LoadingButton fullWidth size="large" type="submit" variant="contained" color="inherit">
+                Sign Up
+              </LoadingButton>
+            </Stack>
+          </form>
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            Already have an account?{' '}
+            <Link variant="subtitle2" component={RouterLink} to="/login">
               Sign in
             </Link>
           </Typography>
-          {renderForm}
         </Card>
       </Stack>
     </Box>

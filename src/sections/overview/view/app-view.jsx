@@ -2,9 +2,9 @@
   import Container from '@mui/material/Container';
   import Typography from '@mui/material/Typography';
 
-  import AppWidgetSummary from '../app-widget-summary';
   import AppText from '../app-text';
   import AppWidgetInputan from '../app-inputan-file';
+  import AppWidgetSummary from '../app-widget-summary';
 
   export default function AppView() {
     return (

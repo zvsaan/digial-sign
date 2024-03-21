@@ -7,26 +7,26 @@ const icon = (name) => (
 );
 
 const navConfigAdmin = [
-  {
-    title: 'dashboard',
-    path: '/',
-    icon: icon('ic_analytics'),
-  },
+  // {
+  //   title: 'dashboard',
+  //   path: '/',
+  //   icon: icon('ic_analytics'),
+  // },
   {
     title: 'document',
-    path: '/document',
+    path: '/User',
     icon: icon('ic_user'),
   },
   {
     title: 'template',
-    path: '/template',
+    path: '/Document',
     icon: icon('ic_cart'),
   },
-  {
-    title: 'API',
-    path: '/api',
-    icon: icon('ic_blog'),
-  },
+  // {
+  //   title: 'API',
+  //   path: '/api',
+  //   icon: icon('ic_blog'),
+  // },
   // {
   //   title: 'login',
   //   path: '/login',

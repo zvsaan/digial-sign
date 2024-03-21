@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import { Link as RouterLink } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -22,58 +21,46 @@ import { bgGradient } from 'src/theme/css';
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 
-// ----------------------------------------------------------------------
-
 export default function LoginView() {
   const theme = useTheme();
-
   const router = useRouter();
-
   const [showPassword, setShowPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
 
-  const handleClick = () => {
-    router.push('/');
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
 
-  const renderForm = (
-    <>
-      <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
-
-        <TextField
-          name="password"
-          label="Password"
-          type={showPassword ? 'text' : 'password'}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Stack>
-
-      <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-        <Link variant="subtitle2" underline="hover">
-          Forget password?
-        </Link>
-      </Stack>
-
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
-        color="inherit"
-        onClick={handleClick}
-      >
-        Login
-      </LoadingButton>
-    </>
-  );
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setSuccessMessage('Login successful. Redirecting...');
+        setTimeout(() => {
+          router.push('/');
+        }, 2000);
+      } else {
+        console.error('Login failed:', data.error);
+      }
+    } catch (error) {
+      console.error('Error during login:', error.message);
+    }
+  };
 
   return (
     <Box
@@ -92,7 +79,6 @@ export default function LoginView() {
           left: { xs: 16, md: 24 },
         }}
       />
-
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Card
           sx={{
@@ -103,14 +89,15 @@ export default function LoginView() {
         >
           <Typography variant="h4">Sign in</Typography>
 
+          {successMessage && (
+            <Typography variant="body2" sx={{ mt: 2, mb: 2, color: 'success.main' }}>
+              {successMessage}
+            </Typography>
+          )}
+
           <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
             Don’t have an account?
-            <Link
-              variant="subtitle2"
-              component={RouterLink}
-              to="/register"
-              sx={{ ml: 0.5 }}
-            >
+            <Link variant="subtitle2" component={RouterLink} to="/register" sx={{ ml: 0.5 }}>
               Sign up
             </Link>
           </Typography>
@@ -153,7 +140,47 @@ export default function LoginView() {
             </Typography>
           </Divider>
 
-          {renderForm}
+          <Stack spacing={3}>
+            <TextField
+              name="email"
+              label="Email address"
+              value={formData.email}
+              onChange={handleChange}
+            />
+
+            <TextField
+              name="password"
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              value={formData.password}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                      <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Stack>
+
+          <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
+            <Link variant="subtitle2" underline="hover">
+              Forget password?
+            </Link>
+          </Stack>
+
+          <LoadingButton
+            fullWidth
+            size="large"
+            variant="contained"
+            color="inherit"
+            onClick={handleLogin}
+          >
+            Login
+          </LoadingButton>
         </Card>
       </Stack>
     </Box>
