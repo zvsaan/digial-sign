@@ -1,14 +1,12 @@
 import { Helmet } from 'react-helmet-async';
 
-import { AdminView } from 'src/sections/user/view';
+import { AdminView } from 'src/sections/admin';
 
-// ----------------------------------------------------------------------
-
-export default function AdminPage() {
+export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard Admin </title>
+        <title> Admin Dashboard </title>
       </Helmet>
 
       <AdminView />

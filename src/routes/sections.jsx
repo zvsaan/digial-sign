@@ -12,8 +12,6 @@ export const ProductsPage = lazy(() => import('src/pages/products'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const AdminPage = lazy(() => import('src/pages/admin'));
 
-// ----------------------------------------------------------------------
-
 export default function Router() {
   const routes = useRoutes([
     {
@@ -33,19 +31,7 @@ export default function Router() {
     },
     {
       path: 'admin',
-      element: (
-        <DashboardLayout>
-          <Suspense>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
-      ),
-      children: [
-        { element: <AdminPage />, index: true },
-        { path: 'document', element: <UserPage /> },
-        { path: 'template', element: <ProductsPage /> },
-        { path: 'api', element: <BlogPage /> },
-      ],
+      element: <AdminPage />,
     },
     {
       path: 'register',
