@@ -11,6 +11,7 @@ export const RegisterPage = lazy(() => import('src/pages/register'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const AdminPage = lazy(() => import('src/pages/admin'));
+export const TablePage = lazy(() => import('src/pages/table'));
 
 export default function Router() {
   const routes = useRoutes([
@@ -32,6 +33,10 @@ export default function Router() {
     {
       path: 'admin',
       element: <AdminPage />,
+    },
+    {
+      path: 'table',
+      element: <TablePage />,
     },
     {
       path: 'register',
